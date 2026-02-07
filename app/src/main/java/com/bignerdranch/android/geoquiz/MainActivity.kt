@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var currentIndex = 0
+    private var totalScore = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +104,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentIndex].answer
 
+        if(!questionBank[currentIndex].answerCheck) {
+            if(userAnswer === correctAnswer) {
+                totalScore += 1
+            }
+            questionBank[currentIndex].answerCheck = true
+        }
+
         val messageResId = if (userAnswer === correctAnswer) {
             R.string.correct_toast
         } else {
@@ -110,7 +118,11 @@ class MainActivity : AppCompatActivity() {
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
-        questionBank[currentIndex].answerCheck = true
+        val allAnswered = questionBank.all { it.answerCheck }
+        if (allAnswered) {
+            val scoreMessage = "Score: $totalScore / ${questionBank.size}"
+            Toast.makeText(this, scoreMessage, Toast.LENGTH_LONG).show()
+        }
         binding.trueButton?.isEnabled = false
         binding.falseButton?.isEnabled = false
     }
