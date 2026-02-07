@@ -20,12 +20,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding
 
     private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
+        Question(R.string.question_australia, true, false),
+        Question(R.string.question_oceans, true, false),
+        Question(R.string.question_mideast, false, false),
+        Question(R.string.question_africa, false, false),
+        Question(R.string.question_americas, true, false),
+        Question(R.string.question_asia, true, false)
     )
 
     private var currentIndex = 0
@@ -70,18 +70,22 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         Log.d(TAG, "onStart() called")
     }
+
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume() called")
     }
+
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause() called")
     }
+
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop() called")
     }
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy() called")
@@ -90,6 +94,10 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion() {
         val questionTextResId = questionBank[currentIndex].textResId
         binding.questionTextView?.setText(questionTextResId)
+
+        val answered = questionBank[currentIndex].answerCheck
+        binding.trueButton?.isEnabled = !answered
+        binding.falseButton?.isEnabled = !answered
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -100,7 +108,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             R.string.incorrect_toast
         }
-
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+
+        questionBank[currentIndex].answerCheck = true
+        binding.trueButton?.isEnabled = false
+        binding.falseButton?.isEnabled = false
     }
 }
